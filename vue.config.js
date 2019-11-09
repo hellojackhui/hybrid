@@ -12,7 +12,7 @@ module.exports = {
                 alias: {
                     '@js': path.resolve(__dirname, './src/common/js'),
                     '@css': path.resolve(__dirname, './src/common/css'),
-                    '@img': path.resolve(__dirname, './src/assets/images'),
+                    '@imgs': path.resolve(__dirname, './src/assets/images'),
                     '@components': path.resolve(__dirname, './src/components')
                 }
             }
