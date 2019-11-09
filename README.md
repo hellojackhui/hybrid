@@ -1,4 +1,4 @@
-# hybrid_jd
+# hybrid_page
 
 ## Project setup
 ```
