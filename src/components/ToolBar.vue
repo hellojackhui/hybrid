@@ -1,6 +1,7 @@
 <template>
     <div class="tool-bar">
-        <div class="tool-bar-item" v-for="(item, index) in toolBarData" :key="index">
+        <div class="tool-bar-item" v-for="(item, index) in toolBarData" :key="index"
+        @click="onChangeFragment(item, index)">
             <img
               class="tool-bar-item-img"
               :src="[index === selectItemIndex ? item.hIcon : item.nIcon]"
@@ -43,31 +44,45 @@
   }
 </style>
 <script type="text/javascript">
+
+import nName from '@imgs/home-n.svg';
+import hName from '@imgs/home-h.svg';
+import nShopping from '@imgs/shopping-n.svg';
+import hShopping from '@imgs/shopping-h.svg';
+import nMy from '@imgs/my-n.svg';
+import hMy from '@imgs/my-h.svg';
+
 export default {
   data() {
     return {
       toolBarData: [
         {
-          nIcon: import('@imgs/home-n.svg'),
-          hIcon: import('@imgs/home-h.svg'),
+          nIcon: nName,
+          hIcon: hName,
           name: '首页',
           componentName: 'home',
         },
         {
-          nIcon: import('@imgs/shopping-n.svg'),
-          hIcon: import('@imgs/shopping-h.svg'),
+          nIcon: nShopping,
+          hIcon: hShopping,
           name: '购物车',
           componentName: 'shopping',
         },
         {
-          nIcon: import('@imgs/my-n.svg'),
-          hIcon: import('@imgs/my-h.svg'),
+          nIcon: nMy,
+          hIcon: hMy,
           name: '我的',
           componentName: 'my',
         },
       ],
       selectItemIndex: 0,
     };
+  },
+  methods: {
+    onChangeFragment(item, index) {
+      this.selectItemIndex = index;
+      this.$emit('onChangeFragment', item.componentName);
+    },
   },
 };
 </script>
