@@ -8,6 +8,7 @@
           </div>
         </activity>
         <mode-options />
+        <seconds :dataSource="secondsDatas"/>
       </div>
     </div>
 </template>
@@ -15,6 +16,7 @@
 import NewSwiper from '@components/NewSwiper.vue';
 import Activity from '@components/Activity.vue';
 import ModeOptions from '@components/ModeOptions.vue';
+import Seconds from '@components/Seconds/Seconds.vue';
 
 export default {
   name: 'home',
@@ -25,12 +27,14 @@ export default {
     NewSwiper,
     Activity,
     ModeOptions,
+    Seconds,
   },
   data() {
     return {
       swiperImgs: [],
       height: '184px',
       activityImgs: [],
+      secondsDatas: [],
     };
   },
   methods: {
@@ -38,9 +42,11 @@ export default {
       this.$http.all([
         this.$http.get('/swiper'),
         this.$http.get('/activities'),
-      ]).then(this.$http.spread((swiperImgs, activityImgs) => {
+        this.$http.get('/seconds'),
+      ]).then(this.$http.spread((swiperImgs, activityImgs, secondsDatas) => {
         this.swiperImgs = swiperImgs.list;
         this.activityImgs = activityImgs.list;
+        this.secondsDatas = secondsDatas.list;
       }));
     },
   },
@@ -52,6 +58,7 @@ export default {
     width: 100%;
     height: 100%;
     background: $bgColor;
+    overflow-y: scroll;
     &-content {
       height: 100%;
       .activity-1111 {
@@ -64,6 +71,9 @@ export default {
           z-index: 2;
         }
       }
+    }
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
 </style>
