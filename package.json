@@ -42,7 +42,7 @@
       "@vue/airbnb"
     ],
     "rules": {
-      "max-len": ["error", {"code": 300}]
+      "max-len": ["error", {"code": 100000}]
     },
     "parserOptions": {
       "parser": "babel-eslint"
