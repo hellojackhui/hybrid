@@ -9,6 +9,12 @@
         </activity>
         <mode-options />
         <seconds :dataSource="secondsDatas"/>
+        <activity>
+          <div class="activity-img">
+            <img src="@imgs/pinyigo.webp" />
+          </div>
+        </activity>
+        <goods />
       </div>
     </div>
 </template>
@@ -17,6 +23,7 @@ import NewSwiper from '@components/NewSwiper.vue';
 import Activity from '@components/Activity.vue';
 import ModeOptions from '@components/ModeOptions.vue';
 import Seconds from '@components/Seconds/Seconds.vue';
+import Goods from '@components/Goods/Goods.vue';
 
 export default {
   name: 'home',
@@ -28,6 +35,7 @@ export default {
     Activity,
     ModeOptions,
     Seconds,
+    Goods,
   },
   data() {
     return {
@@ -69,6 +77,13 @@ export default {
           display: inline-block;
           width: 33.3%;
           z-index: 2;
+        }
+      }
+      .activity-img {
+        background-color: white;
+        margin-top: $marginSize;
+        img {
+          width: 100%;
         }
       }
     }
