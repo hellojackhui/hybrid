@@ -1,9 +1,13 @@
 <template>
-    <div class="goods goods-scroll" :style="{height: goodsViewHeight}">
-      <div class="goods-item" v-for="(item, index) in list" :key="index" ref="goodsItem" :style="goodsItemStyles[index]">
+    <div class="goods goods-waterfall" :style="{height: goodsViewHeight}">
+      <div class="goods-waterfall-item" v-for="(item, index) in list" :key="index" ref="goodsItem" :style="goodsItemStyles[index]">
         <img class="goods-item-img" :src="item.img" alt="" :style="imgStyles[index]"/>
         <div class="goods-item-desc">
-          <p class="goods-item-desc-name">{{item.name}}</p>
+          <p class="goods-item-desc-name" :class="{'goods-item-desc-name-hint' : !item.isHave}">
+            <direct v-if="item.isdirect"></direct>
+            <no-have v-if="!item.isHave"></no-have>
+            {{item.name}}
+          </p>
           <div class="goods-item-desc-data">
             <p class="goods-item-desc-data-price">¥{{item.price | priceValue}}</p>
             <p class="goods-item-desc-data-volume">销量:{{item.volume}}</p>
@@ -13,6 +17,9 @@
     </div>
 </template>
 <script>
+import Direct from '@components/Goods/Direct.vue';
+import NoHave from '@components/Goods/NoHave.vue';
+
 export default {
   data() {
     return {
@@ -25,13 +32,40 @@ export default {
       goodsViewHeight: '100%',
     };
   },
+  props: {
+    sort: {
+      type: String,
+      default: '1',
+    },
+    /**
+     * 1：列表布局
+     * 2：网格布局
+     * 3：瀑布流布局
+    */
+    layoutType: {
+      type: String,
+      default: '3',
+    },
+    /**
+      * 是否允许 goods 单独滑动
+      */
+    isScroll: {
+      type: Boolean,
+      default: true,
+    },
+  },
   created() {
     this.initData();
+  },
+  watch: {
+    layoutType() {
+      this.initLayout();
+    },
   },
   methods: {
     initData() {
       this.$http.get('/goods').then((data) => {
-        this.list = data.list;
+        this.list = data;
         this.initImgsStyle();
         this.initLayout();
       });
@@ -45,6 +79,18 @@ export default {
         this.imgStyles.push({
           height: imgHeight,
         });
+      });
+    },
+    /**
+      * 根据随机高度，生成图片样式数据
+    */
+    initImgStyles() {
+      this.list.forEach(() => {
+        this.imgStyles.push(
+          {
+            height: `${this.imgHeight()}px`,
+          },
+        );
       });
     },
     initLayout() {
@@ -101,12 +147,20 @@ export default {
       }
     },
   },
+  components: {
+    Direct,
+    NoHave,
+  },
 };
 </script>
 <style lang="scss" scoped>
 @import '@css/style.scss';
 .goods {
   background-color: $bgColor;
+  &-scroll {
+    overflow: hidden;
+    overflow-y: auto;
+  }
   &-item {
     background-color: white;
     padding: $marginSize;
@@ -115,7 +169,16 @@ export default {
       width: 100%;
       &-name {
         font-size: $infoSize;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-word;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        display: -webkit-box;
         line-height: px2rem(18);
+        &-hint {
+          color: $textHintColor;
+        }
       }
       &-data {
         width: 100%;
@@ -142,7 +205,10 @@ export default {
   &-item {
     position: absolute;
     width: 49%;
+    box-sizing: border-box;
+    padding: px2rem(2);
     border-radius: $radiusSize;
+    background-color: white;
     .goods-item-img {
       width: 100%;
     }

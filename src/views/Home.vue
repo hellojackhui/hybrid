@@ -1,7 +1,19 @@
 <template>
-    <div class="home">
+    <div class="home" @scroll="onScrollChange">
+      <navgation-bar :isDefault="false" :navBarStyle="navBarStyle">
+        <template v-slot:nav-left>
+            <img :src="navBarCurrentSlot.leftIcon">
+        </template>
+        <template v-slot:nav-center>
+            <search :bgColor="navBarCurrentSlot.search.bgColor" :hintColor="navBarCurrentSlot.search.hintColor"
+            :icon="navBarCurrentSlot.search.icon"></search>
+        </template>
+        <template v-slot:nav-right>
+            <img :src="navBarCurrentSlot.rightIcon">
+        </template>
+      </navgation-bar>
       <div class="home-content">
-        <new-swiper :swiperImgs="swiperImgs" :height="height"></new-swiper>
+        <new-swiper :swiperImgs="swiperDatas" :height="height"></new-swiper>
         <activity>
           <div class="activity-1111">
             <img v-for="(item, index) in activityImgs" :key="index" :src="item.icon"/>
@@ -19,15 +31,24 @@
     </div>
 </template>
 <script>
+import NavgationBar from '@components/NavigationBar.vue';
 import NewSwiper from '@components/NewSwiper.vue';
 import Activity from '@components/Activity.vue';
 import ModeOptions from '@components/ModeOptions.vue';
 import Seconds from '@components/Seconds/Seconds.vue';
 import Goods from '@components/Goods/Goods.vue';
+import Search from '@components/Search.vue';
+import MoreWhite from '@imgs/more-white.svg';
+import SearchIcon from '@imgs/search.svg';
+import MessageWhite from '@imgs/message-white.svg';
+import More from '@imgs/more.svg';
+import SearchWhite from '@imgs/search-white.svg';
+import Message from '@imgs/message.svg';
 
 export default {
   name: 'home',
   created() {
+    this.navBarCurrentSlot = this.navBarSlotData.normal;
     this.initData();
   },
   components: {
@@ -36,13 +57,44 @@ export default {
     ModeOptions,
     Seconds,
     Goods,
+    NavgationBar,
+    Search,
   },
   data() {
     return {
-      swiperImgs: [],
+      navBarSlotData: {
+        normal: {
+          leftIcon: MoreWhite,
+          search: {
+            bgColor: '#ffffff',
+            hintColor: '#999999',
+            icon: SearchIcon,
+          },
+          rightIcon: MessageWhite,
+        },
+        highlight: {
+          leftIcon: More,
+          search: {
+            bgColor: '#d7d7d7',
+            hintColor: '#ffffff',
+            icon: SearchWhite,
+          },
+          rightIcon: Message,
+        },
+      },
+      swiperDatas: [],
       height: '184px',
       activityImgs: [],
       secondsDatas: [],
+      // 顶部样式
+      navBarStyle: {
+        backgroundColor: '',
+        position: 'fixed',
+      },
+      // 滚动值
+      scrollTopValue: -1,
+      ANCHOR_SCROLL_TOP: 160,
+      navBarCurrentSlot: {},
     };
   },
   methods: {
@@ -52,10 +104,25 @@ export default {
         this.$http.get('/activities'),
         this.$http.get('/seconds'),
       ]).then(this.$http.spread((swiperImgs, activityImgs, secondsDatas) => {
-        this.swiperImgs = swiperImgs.list;
+        this.swiperDatas = swiperImgs.list;
         this.activityImgs = activityImgs.list;
         this.secondsDatas = secondsDatas.list;
       }));
+    },
+    onScrollChange($e) {
+      this.scrollTopValue = $e.target.scrollTop;
+      const opacity = this.scrollTopValue / this.ANCHOR_SCROLL_TOP;
+      if (opacity >= 1) {
+        this.navBarCurrentSlot = this.navBarSlotData.highlight;
+      } else {
+        this.navBarCurrentSlot = this.navBarSlotData.normal;
+      }
+      this.navBarStyle.backgroundColor = `rgba(255, 255, 255,${opacity})`;
+    },
+  },
+  computed: {
+    swiperImgs() {
+      return this.swiperDatas.map(item => item.icon);
     },
   },
 };
