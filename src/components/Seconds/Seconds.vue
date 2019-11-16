@@ -2,7 +2,7 @@
     <div class="seconds">
         <div class="seconds-container">
             <div class="title-wrap">
-              <count-down :endHours="1" />
+              <count-down :endHours="10" />
             </div>
             <div class="floor-container">
               <ul class="seckill-new-list">

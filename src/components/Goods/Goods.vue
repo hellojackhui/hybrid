@@ -1,19 +1,21 @@
 <template>
-    <div class="goods goods-waterfall" :style="{height: goodsViewHeight}">
-      <div class="goods-waterfall-item" v-for="(item, index) in list" :key="index" ref="goodsItem" :style="goodsItemStyles[index]">
-        <img class="goods-item-img" :src="item.img" alt="" :style="imgStyles[index]"/>
-        <div class="goods-item-desc">
-          <p class="goods-item-desc-name" :class="{'goods-item-desc-name-hint' : !item.isHave}">
-            <direct v-if="item.isdirect"></direct>
-            <no-have v-if="!item.isHave"></no-have>
-            {{item.name}}
-          </p>
-          <div class="goods-item-desc-data">
-            <p class="goods-item-desc-data-price">¥{{item.price | priceValue}}</p>
-            <p class="goods-item-desc-data-volume">销量:{{item.volume}}</p>
-          </div>
+    <div class="goods" :class="[layoutClass, {'goods-scroll' : isScroll}]" :style="{height: goodsViewHeight}"
+    @scroll="onScrollChange" ref="goods">
+        <div class="goods-item" :class="layoutItemClass"  :style="goodsItemStyles[index]"
+        v-for="(item, index) in sortGoodsData" :key="index" ref="goodsItem" @click="onGoodsItemClick(item)">
+            <img class="goods-item-img" :src="item.img" alt="" srcset="" :style="imgStyles[index]">
+            <div class="goods-item-desc">
+                <p class="goods-item-desc-name" :class="{'goods-item-desc-name-hint' : !item.isHave}">
+                    <direct v-if="item.isDirect"></direct>
+                    <no-have v-if="!item.isHave"></no-have>
+                    {{item.name}}
+                </p>
+                <div class="goods-item-desc-data">
+                    <p class="goods-item-desc-data-price">￥{{item.price | priceValue}}</p>
+                    <p class="goods-item-desc-data-volume">销量：{{item.volume}}</p>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 </template>
 <script>
@@ -23,10 +25,12 @@ import NoHave from '@components/Goods/NoHave.vue';
 export default {
   data() {
     return {
-      list: [],
+      goodsData: [],
       MAX_IMG_HEIGHT: 230,
       MIN_IMG_HEIGHT: 178,
+      layoutClass: 'goods-goodsData',
       imgStyles: [],
+      sortGoodsData: [],
       itemMarginBottomSize: 8,
       goodsItemStyles: [],
       goodsViewHeight: '100%',
@@ -57,7 +61,13 @@ export default {
   created() {
     this.initData();
   },
+  activated() {
+    this.$refs.goods.scrollTop = this.scrollTopValue;
+  },
   watch: {
+    sort() {
+      this.setSortGoodsData();
+    },
     layoutType() {
       this.initLayout();
     },
@@ -65,16 +75,71 @@ export default {
   methods: {
     initData() {
       this.$http.get('/goods').then((data) => {
-        this.list = data;
+        this.goodsData = data.goodsData;
+        this.goodsData = data;
+        this.setSortGoodsData();
         this.initImgsStyle();
         this.initLayout();
+      });
+    },
+    setSortGoodsData() {
+      switch (this.sort) {
+        // 默认
+        case '1':
+          // 深拷贝，不改变原数组
+          this.sortGoodsData = this.goodsData.slice(0);
+          break;
+        // 价格
+        case '1-2':
+          this.getSortGoodsDataFromKey('price');
+          break;
+        // 销量
+        case '1-3':
+          this.getSortGoodsDataFromKey('volume');
+          break;
+        // 有货优先
+        case '2':
+          this.getSortGoodsDataFromKey('isHave');
+          break;
+        // 直营优先
+        case '3':
+          this.getSortGoodsDataFromKey('isDirect');
+          break;
+        default:
+          break;
+      }
+    },
+    getSortGoodsDataFromKey(key) {
+      /**
+      *  返回 负数 ， 表示 goods1 在 goods2 之前，
+      *  返回正数， 表示 goods1 在 goods2 之后，
+      *  返回 0， 顺序不变
+      */
+      return this.sortGoodsData.sort((goods1, goods2) => {
+        const v1 = goods1[key];
+        const v2 = goods2[key];
+        // boolean 类型值的处理
+        if (typeof v1 === 'boolean') {
+          if (v1) {
+            return -1;
+          }
+          if (v2) {
+            return 1;
+          }
+          return 0;
+        }
+        // float 类型值的处理
+        if (parseFloat(v1) >= parseFloat(v2)) {
+          return -1;
+        }
+        return 1;
       });
     },
     imgHeight() {
       return Math.floor(Math.random() * (this.MAX_IMG_HEIGHT - this.MIN_IMG_HEIGHT) + this.MIN_IMG_HEIGHT);
     },
     initImgsStyle() {
-      this.list.forEach(() => {
+      this.goodsData.forEach(() => {
         const imgHeight = `${this.imgHeight()}px`;
         this.imgStyles.push({
           height: imgHeight,
@@ -85,7 +150,7 @@ export default {
       * 根据随机高度，生成图片样式数据
     */
     initImgStyles() {
-      this.list.forEach(() => {
+      this.goodsData.forEach(() => {
         this.imgStyles.push(
           {
             height: `${this.imgHeight()}px`,
@@ -99,8 +164,8 @@ export default {
       this.imgStyles = [];
       switch (this.layoutType) {
         case '1':
-          this.layoutClass = 'goods-list';
-          this.layoutItemClass = 'goods-list-item';
+          this.layoutClass = 'goods-goodsData';
+          this.layoutItemClass = 'goods-goodsData-item';
           break;
         case '2':
           this.layoutClass = 'goods-grid';
@@ -145,6 +210,9 @@ export default {
       if (!this.isScroll) {
         this.goodsViewHeight = leftHeightTotal > rightHeightTotal ? `${leftHeightTotal}px` : `${rightHeightTotal}px`;
       }
+    },
+    onScrollChange($e) {
+      this.scrollTopValue = $e.target.scrollTop;
     },
   },
   components: {

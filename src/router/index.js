@@ -10,6 +10,11 @@ const routes = [
     name: 'home',
     component: Main,
   },
+  {
+    path: '/goodsList',
+    name: 'GoodsList',
+    component: () => import(/* webpackChunkName: "goodsList" */ '../views/GoodsList.vue'),
+  },
 ];
 
 const router = new VueRouter({

@@ -60,7 +60,7 @@ export default {
         display: flex;
         justify-content: space-between;
         // 适配手机stateBar
-        padding-top: $stateBarHeight;
+        padding-top: px2rem(10);
         .left, .right {
             display: flex;
             height: 100%;

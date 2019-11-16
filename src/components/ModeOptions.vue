@@ -1,6 +1,6 @@
 <template>
     <div class="mode-options">
-        <div class="mode-options-item" v-for="(item, index) in dataSource" :key="index">
+        <div class="mode-options-item" v-for="(item, index) in dataSource" :key="index" @click="onItemClick">
             <img class="mode-options-item-icon" :src="item.icon" />
             <span class="mode-options-item-title">{{item.title}}</span>
         </div>
@@ -75,6 +75,16 @@ export default {
         },
       ],
     };
+  },
+  methods: {
+    onItemClick() {
+      this.$router.push({
+        name: 'GoodsList',
+        params: {
+          routerType: 'push',
+        },
+      });
+    },
   },
 };
 </script>
