@@ -28,7 +28,8 @@ export default {
       goodsData: [],
       MAX_IMG_HEIGHT: 230,
       MIN_IMG_HEIGHT: 178,
-      layoutClass: 'goods-goodsData',
+      layoutClass: 'goods-list',
+      layoutItemClass: 'goods-list-item',
       imgStyles: [],
       sortGoodsData: [],
       itemMarginBottomSize: 8,
@@ -75,10 +76,8 @@ export default {
   methods: {
     initData() {
       this.$http.get('/goods').then((data) => {
-        this.goodsData = data.goodsData;
         this.goodsData = data;
         this.setSortGoodsData();
-        this.initImgsStyle();
         this.initLayout();
       });
     },
@@ -86,7 +85,7 @@ export default {
       switch (this.sort) {
         // 默认
         case '1':
-          // 深拷贝，不改变原数组
+          // 浅拷贝，不改变原数组
           this.sortGoodsData = this.goodsData.slice(0);
           break;
         // 价格
@@ -164,8 +163,8 @@ export default {
       this.imgStyles = [];
       switch (this.layoutType) {
         case '1':
-          this.layoutClass = 'goods-goodsData';
-          this.layoutItemClass = 'goods-goodsData-item';
+          this.layoutClass = 'goods-list';
+          this.layoutItemClass = 'goods-list-item';
           break;
         case '2':
           this.layoutClass = 'goods-grid';
@@ -213,6 +212,24 @@ export default {
     },
     onScrollChange($e) {
       this.scrollTopValue = $e.target.scrollTop;
+    },
+    /**
+      * 商品点击事件
+    */
+    onGoodsItemClick(item) {
+      if (!item.isHave) {
+        // eslint-disable-next-line
+        alert('该商品暂无库存');
+        return;
+      }
+      this.$store.commit('setSelectGoods', item);
+      this.$router.push({
+        name: 'goodsDetails',
+        params: {
+          routerType: 'push',
+          // goods: item
+        },
+      });
     },
   },
   components: {
@@ -264,6 +281,36 @@ export default {
           color: $textHintColor;
         }
       }
+    }
+  }
+}
+.goods-list {
+  &-item {
+    display: flex;
+    border-bottom: 1px solid $lineColor;
+    .goods-item-img {
+      width: px2rem(120);
+      height: px2rem(120);
+    }
+    .goods-item-desc {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: $marginSize;
+    }
+  }
+}
+.goods-grid {
+  margin: $marginSize;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  &-item {
+    width: 49%;
+    border-radius: $radiusSize;
+    margin-bottom: $marginSize;
+    .goods-item-img {
+      width: 100%;
     }
   }
 }

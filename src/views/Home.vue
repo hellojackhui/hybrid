@@ -26,7 +26,7 @@
             <img src="@imgs/pinyigo.webp" />
           </div>
         </activity>
-        <goods />
+        <goods :layoutType="3" />
       </div>
     </div>
 </template>
