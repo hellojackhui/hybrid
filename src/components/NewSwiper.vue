@@ -1,7 +1,7 @@
 <template>
-  <swiper :options="swiperOptions">
+  <swiper :options="swiperOption" ref="newSwiper">
     <swiper-slide v-for="(item, index) in swiperImgs" :key="index">
-      <img class="swiper-slide-img" :src="item.icon" :style="{height: height}" />
+      <img class="swiper-slide-img" :src="item" :style="{height: height}" />
     </swiper-slide>
     <template v-slot:pagination>
         <div class="swiper-pagination">
@@ -73,10 +73,14 @@ export default {
         return [];
       },
     },
+    paginationType: {
+      type: String,
+      default: '1',
+    },
   },
   data() {
     return {
-      swiperOptions: {
+      swiperOption: {
         autoplay: true,
         autoHeight: true,
         pagination: {
@@ -85,6 +89,30 @@ export default {
         },
       },
     };
+  },
+  created() {
+    this.initPaginationLayout();
+  },
+  methods: {
+    initPaginationLayout() {
+      switch (this.paginationType) {
+        case '1':
+          this.swiperOption.pagination = {
+            el: '.swiper-pagination',
+            type: 'bullets',
+            bulletClass: 'custom-bullet-class',
+          };
+          break;
+        case '2':
+          this.swiperOption.pagination = {
+            el: '.swiper-pagination',
+            type: 'fraction',
+          };
+          break;
+        default:
+          break;
+      }
+    },
   },
   components: {
     swiper,

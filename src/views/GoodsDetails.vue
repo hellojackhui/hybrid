@@ -15,7 +15,7 @@
         <parallax @onScrollChange="onScrollChange">
             <template v-slot:parallax-slow>
                 <!-- 轮播 -->
-                <my-swiper :height="SWIPER_IMAGE_HEIGHT + 'px'" :swiperImgs="goodsData.swiperImgs" :paginationType="'2'"></my-swiper>
+                <new-swiper :height="SWIPER_IMAGE_HEIGHT + 'px'" :swiperImgs="goodsData.swiperImgs" :paginationType="'2'"></new-swiper>
             </template>
             <template>
                  <div class="goods-detail-content-desc">
@@ -31,7 +31,7 @@
                         <div class="goods-detail-content-desc-item-support">
                             <ul class="goods-detail-content-desc-item-support-list">
                                 <li class="goods-detail-content-desc-item-support-list-item" v-for="(item, index) in supportDatas" :key="index">
-                                    <img src="@img/support.svg" alt="" srcset="">
+                                    <img src="@imgs/support.svg" alt="" srcset="">
                                     <span>{{item}}</span>
                                 </li>
                             </ul>
@@ -42,7 +42,7 @@
                     </div>
                 </div>
             </template>
-        </parallax> 
+        </parallax>
     </div>
     <div class="goods-detail-buy" :class="{'iphonex-bottom' : isIphoneX}">
         <div class="goods-detail-buy-add" @click="onAddGoodsClick">
@@ -56,16 +56,17 @@
 </template>
 <script>
 import NavgationBar from '@components/NavigationBar.vue';
-import MySwiper from '@components/swiper/MySwiper.vue';
-import direct from '@components/goods/Direct.vue';
+import NewSwiper from '@components/NewSwiper.vue';
+import direct from '@components/Goods/Direct.vue';
 import Parallax from '@components/parallax/Parallax.vue';
+
 export default {
   name: 'goodsDetail',
   components: {
-      NavgationBar,
-      MySwiper,
-      direct,
-      Parallax
+    NavgationBar,
+    NewSwiper,
+    direct,
+    Parallax,
   },
   data() {
     return {
@@ -76,10 +77,10 @@ export default {
       scrollTopValue: -1,
       isIphoneX: window.isIphoneX,
       supportDatas: [
-          '可配送海外', '京东发货&售后', '京准达', '211限时达', '可自提', '不可使用优惠卷',
+        '可配送海外', '京东发货&售后', '京准达', '211限时达', '可自提', '不可使用优惠卷',
       ],
       parallaxScroll: 0,
-    }
+    };
   },
   created() {
     this.goodsData = this.$store.state.selectGoods;
@@ -93,51 +94,50 @@ export default {
      */
     onScrollChange(parallaxScroll) {
       this.parallaxScroll = parallaxScroll;
-      // this.leftImgOpacity = 1 - parallaxScroll / this.SWIPER_IMAGE_HEIGHT;
-      // this.navBarOpactity = 1 - this.leftImgOpacity;
     },
     /**
      * 添加商品到购物车
      */
-    onAddGoodsClick: function () {
+    onAddGoodsClick() {
       this.$store.commit('addShoppiongData', this.goodsData);
+      // eslint-disable-next-line
       alert('添加成功');
       this.$router.push({
-          name: 'imooc',
-          params: {
-              routerType: 'push',
-              componentIndex: 1
-          },
-      })
+        name: 'imooc',
+        params: {
+          routerType: 'push',
+          componentIndex: 1,
+        },
+      });
     },
     /**
      * 立即购买点击事件
      */
-    onBuyClick: function () {
+    onBuyClick() {
       this.$router.push({
         name: 'buy',
         params: {
-            routerType: 'push',
-        }
-      })
-    }
+          routerType: 'push',
+        },
+      });
+    },
   },
   computed: {
-    leftImgOpacity: function () {
+    leftImgOpacity() {
       return 1 - this.parallaxScroll / this.ANCHOR_SCROLL_TOP;
     },
-    navBarOpactity: function () {
+    navBarOpactity() {
       return 1 - this.leftImgOpacity;
     },
-    navBarStyle: function () {
+    navBarStyle() {
       return {
-        backgroundColor: 'rgba(216, 30, 6, ' + this.navBarOpactity + ')',
+        backgroundColor: `rgba(216, 30, 6, ${this.navBarOpactity})`,
         position: 'fixed',
         top: 0,
       };
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 @import '@css/style.scss';
@@ -196,7 +196,7 @@ export default {
             height: px2rem(44);
             display: flex;
             align-items: center;
-            border-bottom: px2rem(1) solid $lineColor;  
+            border-bottom: px2rem(1) solid $lineColor;
             span {
               color: $textColor;
               font-size: $titleSize;
@@ -204,21 +204,21 @@ export default {
               margin-left: px2rem(4);
               width: 80%;
             }
-          }  
+          }
           &-support {
-            margin-top: $marginSize;  
+            margin-top: $marginSize;
             &-list {
               display: flex;
-              flex-wrap: wrap;  
+              flex-wrap: wrap;
               &-item {
                 display: flex;
                 align-items: center;
                 padding: px2rem(6) 0;
-                margin-right: $marginSize;  
+                margin-right: $marginSize;
                 img {
                   width: px2rem(12);
                   margin-right: px2rem(4);
-                }  
+                }
                 span {
                   font-size: $minInfoSize;
                   color: $textHintColor;
@@ -226,30 +226,30 @@ export default {
               }
             }
           }
-        }  
+        }
         &-detail {
           img {
             width: 100%;
           }
         }
-      }  
+      }
   }
   &-buy {
     background-color: white;
     border-top: px2rem(1) solid $lineColor;
     height: px2rem(46);
     line-height: px2rem(46);
-    text-align: right;  
+    text-align: right;
     div {
         display: inline-block;
         width: px2rem(100);
         text-align: center;
         font-size: $infoSize;
         color: white;
-    }  
+    }
     &-add {
         background-color: $mainColor;
-    }  
+    }
     &-now {
         background-color: darkgoldenrod;
     }

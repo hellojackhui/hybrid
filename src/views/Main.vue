@@ -1,6 +1,8 @@
 <template>
     <div class="main">
+      <keep-alive>
       <component :is="conponentName"></component>
+      </keep-alive>
       <tool-bar @onChangeFragment="onChangeFragment" />
     </div>
 </template>
@@ -14,6 +16,9 @@ export default {
       conponentName: 'Home',
     };
   },
+  activated() {
+    this.pushComponent();
+  },
   components: {
     ToolBar,
     Home: () => import('@views/Home.vue'),
@@ -21,8 +26,14 @@ export default {
     My: () => import('@views/My.vue'),
   },
   methods: {
-    onChangeFragment(name) {
-      this.conponentName = name;
+    pushComponent() {
+      /* eslint-disable */
+      const componentIndex = this.$route.params.componentIndex;
+      if (!componentIndex) return;
+      this.$refs.toolBar.onChangeComponent(componentIndex);
+    },
+    onChangeFragment(componentName) {
+      this.isComponent = componentName;
     },
   },
 };

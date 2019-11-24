@@ -35,6 +35,7 @@ export default {
       itemMarginBottomSize: 8,
       goodsItemStyles: [],
       goodsViewHeight: '100%',
+      scrollTopValue: 0,
     };
   },
   props: {

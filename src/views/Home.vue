@@ -1,5 +1,5 @@
 <template>
-    <div class="home" @scroll="onScrollChange">
+    <div class="home" @scroll="onScrollChange" ref="home">
       <navgation-bar :isDefault="false" :navBarStyle="navBarStyle">
         <template v-slot:nav-left>
             <img :src="navBarCurrentSlot.leftIcon">
@@ -13,7 +13,7 @@
         </template>
       </navgation-bar>
       <div class="home-content">
-        <new-swiper :swiperImgs="swiperDatas" :height="height"></new-swiper>
+        <new-swiper :swiperImgs="swiperImgs" :height="height"></new-swiper>
         <activity>
           <div class="activity-1111">
             <img v-for="(item, index) in activityImgs" :key="index" :src="item.icon"/>
@@ -26,7 +26,7 @@
             <img src="@imgs/pinyigo.webp" />
           </div>
         </activity>
-        <goods :layoutType="3" />
+        <goods :layoutType="'3'" :isScroll="false" />
       </div>
     </div>
 </template>
@@ -59,6 +59,9 @@ export default {
     Goods,
     NavgationBar,
     Search,
+  },
+  activated() {
+    this.$refs.home.scrollTop = this.scrollTopValue;
   },
   data() {
     return {

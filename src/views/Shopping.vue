@@ -8,6 +8,7 @@
 import NavgationBar from '@components/NavigationBar.vue';
 
 export default {
+  name: 'shopping',
   components: {
     NavgationBar,
   },

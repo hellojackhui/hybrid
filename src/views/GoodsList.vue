@@ -20,6 +20,7 @@ import GoodsOptions from '@components/Goods/GoodsOptions.vue';
 import Goods from '@components/Goods/Goods.vue';
 
 export default {
+  name: 'Goodslist',
   data() {
     return {
       isIphoneX: window.isIphoneX,
