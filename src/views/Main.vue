@@ -3,17 +3,20 @@
       <keep-alive>
       <component :is="conponentName"></component>
       </keep-alive>
-      <tool-bar @onChangeFragment="onChangeFragment" />
+      <tool-bar ref="toolBar" @onChangeFragment="onChangeFragment" />
     </div>
 </template>
 <script>
 import ToolBar from '@components/ToolBar.vue';
+import Home from '@views/Home.vue';
+import Shopping from '@views/Shopping.vue';
+import My from '@views/My.vue';
 
 export default {
   name: 'Main',
   data() {
     return {
-      conponentName: 'Home',
+      conponentName: 'home',
     };
   },
   activated() {
@@ -21,9 +24,9 @@ export default {
   },
   components: {
     ToolBar,
-    Home: () => import('@views/Home.vue'),
-    Shopping: () => import('@views/Shopping.vue'),
-    My: () => import('@views/My.vue'),
+    home: Home,
+    shopping: Shopping,
+    my: My,
   },
   methods: {
     pushComponent() {
@@ -33,7 +36,7 @@ export default {
       this.$refs.toolBar.onChangeComponent(componentIndex);
     },
     onChangeFragment(componentName) {
-      this.isComponent = componentName;
+      this.conponentName = `${componentName}`;
     },
   },
 };

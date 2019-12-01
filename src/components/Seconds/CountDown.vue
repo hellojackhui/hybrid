@@ -71,8 +71,8 @@ export default {
     font-size: $infoSize;
     margin-left: px2rem(5);
     &-img {
-      float: left;
       display: inline-block;
+      float: left;
       margin-top: px2rem(10);
       margin-left: px2rem(2);
       width: px2rem(70);
@@ -83,7 +83,7 @@ export default {
     span {
         display: inline-block;
         height: 100%;
-        vertical-align: middle;
+        line-height: px2rem(20);
         padding: px2rem(2) px2rem(4);
     }
     &-time {

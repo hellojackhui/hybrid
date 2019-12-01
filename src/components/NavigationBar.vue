@@ -59,6 +59,7 @@ export default {
         line-height: $navBarHeight;
         display: flex;
         justify-content: space-between;
+        background-color: rgba($color: #000000, $alpha: 0.4);
         // 适配手机stateBar
         padding-top: px2rem(10);
         .left, .right {

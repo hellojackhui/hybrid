@@ -120,7 +120,7 @@ export default {
       } else {
         this.navBarCurrentSlot = this.navBarSlotData.normal;
       }
-      this.navBarStyle.backgroundColor = `rgba(255, 255, 255,${opacity})`;
+      this.navBarStyle.backgroundColor = `rgba(255, 255, 255,${opacity + 0.2})`;
     },
   },
   computed: {

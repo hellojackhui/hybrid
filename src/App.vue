@@ -13,8 +13,13 @@ export default {
   data() {
     return {
       transitionName: 'fold-left',
-      keepAliveNames: [],
+      keepAliveNames: [
+        'Main',
+      ],
     };
+  },
+  created() {
+    window.nativeFunctionUserLogin = this.nativeFunctionUserLogin;
   },
   // 接着在父组件内
   // watch $route 决定使用哪种过渡
@@ -31,6 +36,15 @@ export default {
       }
     },
   },
+  methods: {
+    /**
+     * 提供给 Native 调用的方法。
+     * 保存当前自动登录的用户名到 vuex。
+     */
+    nativeFunctionUserLogin(username) {
+       this.$store.commit('setUsername', username);
+    },
+  }
 };
 </script>
 <style lang="scss">
